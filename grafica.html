@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfica Interactiva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="myChart"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Define el valor de v
+        const v = 4;
+
+        // Define los valores de p específicos
+        const pValuesSpecific = [6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500, 13000];
+
+        // Calcula los valores de t específicos usando la función dada
+        const tValuesSpecific = pValuesSpecific.map(p => (1 / v) * (Math.log10(p) + 0.89));
+
+        // Define los valores de p desde 0 hasta 13000
+        const pValuesAll = Array.from({length: 13001}, (_, i) => i);
+
+        // Calcula los valores de t para todos los puntos
+        const tValuesAll = pValuesAll.map(p => p === 0 ? 0 : (1 / v) * (Math.log10(p) + 0.89));
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        const data = {
+            labels: pValuesAll,
+            datasets: [
+                {
+                    label: 't(p) = 1/4 * (log(p) + 0.89)',
+                    data: tValuesAll,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0, // No mostrar puntos para todos los datos
+                },
+                {
+                    label: 'Puntos específicos',
+                    data: tValuesSpecific,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: false,
+                    showLine: false // No mostrar la línea para los puntos específicos
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'p (KB)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 't (s) '
+                        }
+                    }
+                }
+            }
+        };
+
+        const myChart = new Chart(ctx, config);
+    </script>
+</body>
+</html>
